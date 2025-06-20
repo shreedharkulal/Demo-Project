@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "shreedhar/demo-app"
         IMAGE_TAG = "latest"
-        DOCKER_CREDENTIALS_ID = "dockerhub"
+        DOCKER_CREDENTIALS_ID = "docker-cred"
         SONARQUBE_ENV = "SonarQube"  // This is the SonarQube server name in Jenkins
     }
 
