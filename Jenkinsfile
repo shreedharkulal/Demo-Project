@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = "shreedhar/demo-app"
         IMAGE_TAG = "latest"
         DOCKER_CREDENTIALS_ID = "docker-cred"
-        SONARQUBE_ENV = "SonarQube"  // This is the SonarQube server name in Jenkins
+        SONARQUBE_ENV = "Sonarqube"  // This is the SonarQube server name in Jenkins
     }
 
     tools {
@@ -24,7 +24,7 @@ pipeline {
         stage('SonarQube Scan') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=demo-app -Dsonar.host.url=http://your-sonarqube-server:9000'
+                    sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=demo-app -Dsonar.host.url=http://3.108.63.180:9000'
                 }
             }
         }
