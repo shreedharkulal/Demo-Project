@@ -1,20 +1,21 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.8.8-openjdk-11'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     environment {
         IMAGE_NAME = "shreedhar/demo-app"
         IMAGE_TAG = "latest"
         DOCKER_CREDENTIALS_ID = "docker-cred"
-        SONARQUBE_ENV = "Sonarqube"  // This is the SonarQube server name in Jenkins
-    }
-
-    tools {
-        maven 'Maven 3'   // Configure Maven in Jenkins (Manage Jenkins > Global Tool Config)
-        jdk 'JDK 11'      // Configure JDK 11 in Jenkins
+        SONARQUBE_ENV = "Sonarqube"
+        SONAR_HOST_URL = "http://3.108.63.180:9000"
+        SONAR_PROJECT_KEY = "demo-app"
     }
 
     stages {
-
         stage('Clone Code') {
             steps {
                 git 'https://github.com/shreedharkulal/Demo-Project.git'
@@ -24,7 +25,11 @@ pipeline {
         stage('SonarQube Scan') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=demo-app -Dsonar.host.url=http://3.108.63.180:9000'
+                    sh """
+                    mvn clean verify sonar:sonar \
+                    -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                    -Dsonar.host.url=${SONAR_HOST_URL}
+                    """
                 }
             }
         }
@@ -37,9 +42,7 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                script {
-                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
-                }
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
 
@@ -77,4 +80,3 @@ pipeline {
         }
     }
 }
-
